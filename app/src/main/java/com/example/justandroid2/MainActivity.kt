@@ -1,6 +1,9 @@
 package com.example.justandroid2
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +23,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -34,7 +36,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.justandroid2.frontend.Homepage
+import com.example.justandroid2.data.LoginData
+import com.example.justandroid2.frontend.CreateUserPage
+import com.example.justandroid2.respon.LoginRespon
+import com.example.justandroid2.service.LoginService
 import com.example.justandroid2.ui.theme.JustAndroid2Theme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +62,29 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Login()
+                    //val preferencesManager = remember { PreferencesManager(context = LocalContext.current) }
+                    val sharedPreferences: SharedPreferences = LocalContext.current.getSharedPreferences("auth", Context.MODE_PRIVATE)
+                    val navController = rememberNavController()
+
+                    var startDestination: String
+                    var jwt = sharedPreferences.getString("jwt", "")
+                    if(jwt.equals("")){
+                        startDestination = "greeting"
+                    }else{
+                        startDestination = "pagetwo"
+                    }
+
+                    NavHost(navController, startDestination = startDestination) {
+                        composable(route = "greeting") {
+                            Login(navController)
+                        }
+                        composable(route = "pagetwo") {
+                            Homepage(navController)
+                        }
+                        composable(route = "createuserpage") {
+                            CreateUserPage(navController)
+                        }
+                    }
                 }
             }
         }
@@ -55,49 +93,83 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(){
+fun Login(navController: NavController, context: Context = LocalContext.current) {
+    val preferencesManager = remember { PreferencesManager(context = context) } // Create PreferencesManager if it's not defined in your code.
+    val baseUrl = "http://10.217.17.11:1337/api/"//"http://10.0.2.2:1337/api/"
+    var jwt by remember { mutableStateOf("") }
+
+    jwt = preferencesManager.getData("jwt")
+
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
             text = AnnotatedString("Sign up here"),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
-            onClick = { },
+            onClick = { /* Handle the "Sign up here" click here */ },
             style = TextStyle(
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
             )
         )
     }
+
     Column(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         val username = remember { mutableStateOf(TextFieldValue()) }
         val password = remember { mutableStateOf(TextFieldValue()) }
 
         Text(text = "Login", style = TextStyle(fontSize = 40.sp))
 
         Spacer(modifier = Modifier.height(20.dp))
+
         TextField(
-            label = { Text(text = "Username") },
             value = username.value,
-            onValueChange = { username.value = it })
+            onValueChange = { username.value = it },
+            label = { Text(text = "Username") }
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
+
         TextField(
-            label = { Text(text = "Password") },
             value = password.value,
+            onValueChange = { password.value = it },
+            label = { Text(text = "Password") },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = { password.value = it })
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
+
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
-                onClick = { },
+                onClick = {
+                    // Handle login button click
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl(baseUrl)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                        .create(LoginService::class.java)
+                    val call = retrofit.getData(LoginData(username.value.text, password.value.text))
+                    call.enqueue(object : Callback<LoginRespon> {
+                        override fun onResponse(call: Call<LoginRespon>, response: Response<LoginRespon>) {
+                            if (response.code() == 200) {
+                                jwt = response.body()?.jwt!!
+                                preferencesManager.saveData("jwt", jwt)
+                                navController.navigate("pagetwo")
+                            } else if (response.code() == 400) {
+                                Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<LoginRespon>, t: Throwable) {
+                            print(t.message)
+                        }
+                    })
+                },
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -108,28 +180,11 @@ fun Login(){
         }
 
         Spacer(modifier = Modifier.height(20.dp))
+
         ClickableText(
             text = AnnotatedString("Forgot password?"),
-            onClick = { },
-            style = TextStyle(
-                fontSize = 14.sp,
-            )
+            onClick = { /* Handle "Forgot password?" click here */ },
+            style = TextStyle(fontSize = 14.sp)
         )
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JustAndroid2Theme {
-        Greeting("Android")
     }
 }

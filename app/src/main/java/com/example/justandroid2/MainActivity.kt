@@ -43,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.justandroid2.frontend.Homepage
 import com.example.justandroid2.data.LoginData
 import com.example.justandroid2.frontend.CreateUserPage
+import com.example.justandroid2.frontend.EditUserPage
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.service.LoginService
 import com.example.justandroid2.ui.theme.JustAndroid2Theme
@@ -71,18 +72,24 @@ class MainActivity : ComponentActivity() {
                     if(jwt.equals("")){
                         startDestination = "greeting"
                     }else{
-                        startDestination = "pagetwo"
+                        startDestination = "Homepage"
                     }
 
                     NavHost(navController, startDestination = startDestination) {
                         composable(route = "greeting") {
                             Login(navController)
                         }
-                        composable(route = "pagetwo") {
+                        composable(route = "Homepage") {
                             Homepage(navController)
                         }
-                        composable(route = "createuserpage") {
+                        composable(route = "CreateUserPage") {
                             CreateUserPage(navController)
+                        }
+                        composable(
+                            route = "edituserpage/{userid}/{username}",
+                        ) {backStackEntry ->
+
+                            EditUserPage(navController, backStackEntry.arguments?.getString("userid"), backStackEntry.arguments?.getString("username"))
                         }
                     }
                 }
@@ -95,10 +102,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Login(navController: NavController, context: Context = LocalContext.current) {
     val preferencesManager = remember { PreferencesManager(context = context) } // Create PreferencesManager if it's not defined in your code.
-    val baseUrl = "http://10.217.17.11:1337/api/"//"http://10.0.2.2:1337/api/"
+    val baseUrl = "http://10.0.2.2:1337/api/"
     var jwt by remember { mutableStateOf("") }
 
     jwt = preferencesManager.getData("jwt")
+
+    // Create mutable state variables for username and password
+    var username by remember { mutableStateOf(TextFieldValue("")) }
+    var password by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
@@ -119,26 +130,20 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val username = remember { mutableStateOf(TextFieldValue()) }
-        val password = remember { mutableStateOf(TextFieldValue()) }
 
         Text(text = "Login", style = TextStyle(fontSize = 40.sp))
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TextField(
-            value = username.value,
-            onValueChange = { username.value = it },
-            label = { Text(text = "Username") }
-        )
+        TextField(value = username, onValueChange = { newText -> username = newText}, label = { Text("Username") })
 
         Spacer(modifier = Modifier.height(20.dp))
 
         TextField(
-            value = password.value,
-            onValueChange = { password.value = it },
+            value = password,
+            onValueChange = { password = it },
             label = { Text(text = "Password") },
-            visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
 
@@ -153,13 +158,13 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build()
                         .create(LoginService::class.java)
-                    val call = retrofit.getData(LoginData(username.value.text, password.value.text))
+                    val call = retrofit.getData(LoginData(username.text, password.text))
                     call.enqueue(object : Callback<LoginRespon> {
                         override fun onResponse(call: Call<LoginRespon>, response: Response<LoginRespon>) {
                             if (response.code() == 200) {
                                 jwt = response.body()?.jwt!!
                                 preferencesManager.saveData("jwt", jwt)
-                                navController.navigate("pagetwo")
+                                navController.navigate("Homepage")
                             } else if (response.code() == 400) {
                                 Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
                             }
@@ -180,11 +185,5 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-
-        ClickableText(
-            text = AnnotatedString("Forgot password?"),
-            onClick = { /* Handle "Forgot password?" click here */ },
-            style = TextStyle(fontSize = 14.sp)
-        )
     }
 }

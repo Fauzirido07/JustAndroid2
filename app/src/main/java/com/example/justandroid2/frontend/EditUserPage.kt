@@ -23,10 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
-import com.example.justandroid2.PreferencesManager
-import com.example.justandroid2.data.RegisterData
 import com.example.justandroid2.respon.LoginRespon
-import com.example.justandroid2.service.RegisterService
+import com.example.justandroid2.PreferencesManager
+import com.example.justandroid2.data.UpdateData
+import com.example.justandroid2.service.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,15 +35,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateUserPage(navController: NavController, context: Context = LocalContext.current){
+fun EditUserPage(navController: NavController, userid : String?, usernameParameter: String?, context: Context = LocalContext.current){
     val preferencesManager = remember { PreferencesManager(context = context) }
-    var username by remember { mutableStateOf(TextFieldValue("")) }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
+    if (usernameParameter != null) {
+        username = usernameParameter
+    }
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Homepage") },
+                title = { Text(text = "Edit User") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -59,20 +62,14 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             OutlinedTextField(value = username, onValueChange = { newText ->
                 username = newText
             }, label = { Text("Username") })
-            OutlinedTextField(value = password, onValueChange = { newText ->
-                password = newText
-            }, label = { Text("Password") })
-            OutlinedTextField(value = email, onValueChange = { newText ->
-                email = newText
-            }, label = { Text("Email") })
             ElevatedButton(onClick = {
                 var baseUrl = "http://10.0.2.2:1337/api/"
                 val retrofit = Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                    .create(RegisterService::class.java)
-                val call = retrofit.saveData(RegisterData(email.text, username.text, password.text))
+                    .create(UserService::class.java)
+                val call = retrofit.save(userid, UpdateData(username))
                 call.enqueue(object : Callback<LoginRespon> {
                     override fun onResponse(
                         call: Call<LoginRespon>,
@@ -99,12 +96,6 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                 })
             }) {
                 Text("Simpan")
-            }
-            ElevatedButton(onClick = {
-                preferencesManager.saveData("jwt", "")
-                navController.navigate("greeting")
-            }) {
-                Text("Logout")
             }
         }
     }

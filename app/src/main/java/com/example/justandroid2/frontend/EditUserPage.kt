@@ -3,8 +3,11 @@ package com.example.justandroid2.frontend
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -20,8 +23,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.PreferencesManager
@@ -59,10 +64,11 @@ fun EditUserPage(navController: NavController, userid : String?, usernameParamet
             .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            OutlinedTextField(value = username, onValueChange = { newText ->
+            OutlinedTextField(modifier = Modifier.padding(PaddingValues(top = 170. dp)),value = username, onValueChange = { newText ->
                 username = newText
             }, label = { Text("Username") })
-            ElevatedButton(onClick = {
+            ElevatedButton(modifier = Modifier.width(280.dp),colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue), onClick = {
                 var baseUrl = "http://10.0.2.2:1337/api/"
                 val retrofit = Retrofit.Builder()
                     .baseUrl(baseUrl)

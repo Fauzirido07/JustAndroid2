@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,7 +50,7 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Homepage") },
+                title = { Text(text = "Register") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -62,7 +63,7 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            OutlinedTextField(value = username, onValueChange = { newText ->
+            OutlinedTextField(modifier = Modifier.padding(PaddingValues(top = 120. dp)), value = username, onValueChange = { newText ->
                 username = newText
             }, label = { Text("Username") })
             OutlinedTextField(value = password, onValueChange = { newText ->

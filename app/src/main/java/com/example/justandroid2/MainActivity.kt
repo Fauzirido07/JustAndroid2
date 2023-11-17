@@ -9,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -117,7 +118,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(20.dp),
-            onClick = { /* Handle the "Sign up here" click here */ },
+            onClick = {navController.navigate("CreateUserPage")} ,
             style = TextStyle(
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
@@ -126,7 +127,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
     }
 
     Column(
-        modifier = Modifier.padding(20.dp),
+        modifier = Modifier.padding(PaddingValues(top = 130. dp)),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -149,7 +150,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+        Box(modifier = Modifier.padding(70.dp, 0.dp, 70.dp, 0.dp)) {
             Button(
                 onClick = {
                     // Handle login button click

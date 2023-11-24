@@ -89,7 +89,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         },
         topBar = {
             TopAppBar(
-                title = { Text(text = "Homepage") },
+                title = { Text(text = "Home") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -107,10 +107,10 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                         Row (modifier = Modifier
                             .padding(10.dp)
                             .fillMaxWidth()
-                            .background(Color.Black), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                            .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
 
                             Text(text = user.username,
-                                 color = Color.White)
+                                 color = Color.Black)
                             Row {
                                 IconButton(onClick = {
                                     val retrofit = Retrofit.Builder()

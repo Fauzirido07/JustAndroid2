@@ -5,13 +5,19 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -49,14 +55,25 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
     var email by remember { mutableStateOf(TextFieldValue("")) }
     Scaffold (
         topBar = {
-            TopAppBar(
-                title = { Text(text = "Register") },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-            )
-        },) {
+                TopAppBar(
+                    title = { Row (
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { navController.navigate("Homepage") }) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
+                        }
+                        Text(text = "Register") }
+                            },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                )
+                 },) {
             innerPadding ->
         Column (modifier = Modifier
             .fillMaxSize()
@@ -72,7 +89,8 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             OutlinedTextField(value = email, onValueChange = { newText ->
                 email = newText
             }, label = { Text("Email") })
-            ElevatedButton(modifier = Modifier.width(280.dp),colors = ButtonDefaults.buttonColors(
+            ElevatedButton(modifier = Modifier.width(280.dp)
+                .padding(PaddingValues(top = 30. dp )), colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue), onClick = {
                 var baseUrl = "http://10.0.2.2:1337/api/"
                 val retrofit = Retrofit.Builder()

@@ -1,5 +1,9 @@
 package com.example.justandroid2.respon
 
+enum class UserRole {
+    Admin, Perekrut, Editor
+}
+
 class UserRespon {
     var id: Int = 0
     var username : String = ""
@@ -9,4 +13,5 @@ class UserRespon {
     var blocked: Boolean = false
     var createdAt : String = ""
     var updatedAt: String = ""
+    var status: UserRole = UserRole.Perekrut
 }

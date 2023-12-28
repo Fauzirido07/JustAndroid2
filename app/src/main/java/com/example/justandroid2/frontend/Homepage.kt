@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.justandroid2.PreferencesManager
 import com.example.justandroid2.respon.UserRespon
 import com.example.justandroid2.service.UserService
 import retrofit2.Call
@@ -44,6 +49,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun Homepage(navController: NavController, context: Context = LocalContext.current){
     //var listUser: List<UserRespon> = remember
+    val preferencesManager = remember { PreferencesManager(context = context) }
+
     val listUser = remember { mutableStateListOf<UserRespon>()}
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
@@ -82,9 +89,10 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
     Scaffold (
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate("createuserpage")
+                    preferencesManager.saveData("jwt", "")
+                    navController.navigate("greeting")
             }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+                Icon(Icons.Default.ExitToApp, contentDescription = "Add")
             }
         },
         topBar = {

@@ -92,12 +92,13 @@ class MainActivity : ComponentActivity() {
 
                             EditUserPage(navController, backStackEntry.arguments?.getString("userid"), backStackEntry.arguments?.getString("username"))
                         }
+                        }
                     }
                 }
             }
         }
     }
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

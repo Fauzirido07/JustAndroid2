@@ -45,6 +45,8 @@ import com.example.justandroid2.frontend.Homepage
 import com.example.justandroid2.data.LoginData
 import com.example.justandroid2.frontend.CreateUserPage
 import com.example.justandroid2.frontend.EditUserPage
+import com.example.justandroid2.frontend.EditorDetailScreen
+import com.example.justandroid2.frontend.HomepageEditor
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.service.LoginService
 import com.example.justandroid2.ui.theme.JustAndroid2Theme
@@ -86,11 +88,33 @@ class MainActivity : ComponentActivity() {
                         composable(route = "CreateUserPage") {
                             CreateUserPage(navController)
                         }
+                        composable(route = "homepageeditor") {
+                            HomepageEditor(navController)
+                        }
                         composable(
-                            route = "edituserpage/{userid}/{username}",
-                        ) {backStackEntry ->
+                            route = "EditProfile/{userid}/{username}/{job}/{email}/{alamat}/{birth}/{status}",
+                        ) { backStackEntry ->
 
-                            EditUserPage(navController, backStackEntry.arguments?.getString("userid"), backStackEntry.arguments?.getString("username"))
+                            EditUserPage(
+                                navController, backStackEntry.arguments?.getString("userid"),
+                                backStackEntry.arguments?.getString("username"),
+                                backStackEntry.arguments?.getString("job"),
+                                backStackEntry.arguments?.getString("email"),
+                                backStackEntry.arguments?.getString("alamat"),
+                                backStackEntry.arguments?.getString("birth"),
+                                backStackEntry.arguments?.getString("status"),
+                            )
+
+                        }
+                        composable("detailEditor/{id}/{username}/{alamat}/{status}/{job}") { backStackEntry ->
+                            EditorDetailScreen(
+                                navController,
+                                backStackEntry.arguments?.getString("id"),
+                                backStackEntry.arguments?.getString("username"),
+                                backStackEntry.arguments?.getString("alamat"),
+                                backStackEntry.arguments?.getString("status"),
+                                backStackEntry.arguments?.getString("job"),
+                            )
                         }
                         }
                     }
@@ -166,7 +190,19 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                             if (response.code() == 200) {
                                 jwt = response.body()?.jwt!!
                                 preferencesManager.saveData("jwt", jwt)
-                                navController.navigate("Homepage")
+                                preferencesManager.saveData("iduser", response.body()?.user?.id.toString())
+                                preferencesManager.saveData("username", response.body()?.user?.username.toString())
+                                preferencesManager.saveData("job", response.body()?.user?.job.toString())
+                                preferencesManager.saveData("email", response.body()?.user?.email.toString())
+                                preferencesManager.saveData("alamat", response.body()?.user?.alamat.toString())
+                                preferencesManager.saveData("status", response.body()?.user?.status.toString())
+                                preferencesManager.saveData("birth", response.body()?.user?.birth.toString())
+
+                                if(response.body()?.user?.job.toString() == "editor"){
+                                    navController.navigate("homepageeditor")
+                                }else if (response.body()?.user?.job.toString() == "perekrut"){
+                                    navController.navigate("Homepage")
+                                }
                             } else if (response.code() == 400) {
                                 Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
                             }

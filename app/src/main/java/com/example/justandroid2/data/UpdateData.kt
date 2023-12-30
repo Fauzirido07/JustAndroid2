@@ -1,5 +1,5 @@
 package com.example.justandroid2.data
 
 class UpdateData (
-    val username:String
+    val email:String?, val username:String, val alamat: String?, val job: String?, val status: String?, val birth: String?
 )

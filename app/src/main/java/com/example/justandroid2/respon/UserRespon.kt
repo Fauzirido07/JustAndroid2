@@ -13,5 +13,9 @@ class UserRespon {
     var blocked: Boolean = false
     var createdAt : String = ""
     var updatedAt: String = ""
-    var status: UserRole = UserRole.Perekrut
+    var alamat: String = ""
+    var job: String = ""
+    var status: String = ""
+    var birth: String = ""
+//    var status: UserRole = UserRole.Perekrut
 }

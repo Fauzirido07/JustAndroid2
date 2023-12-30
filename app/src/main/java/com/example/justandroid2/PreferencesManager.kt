@@ -18,6 +18,12 @@ class PreferencesManager (context: Context){
         editor.apply()
     }
 
+    fun clearData(){
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
+    }
+
     fun getData(key: String) : String{
         return sharedPreferences.getString(key, "") ?: ""
     }

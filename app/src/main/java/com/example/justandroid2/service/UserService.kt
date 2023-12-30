@@ -9,10 +9,16 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface UserService {
     @GET("users")
-    fun getData() : Call<List<UserRespon>>
+    fun getData(@Query("filters[job]") job: String?) : Call<List<UserRespon>>
+
+
+    @GET("users")
+    fun getDataEditor(@Query("filters[id]") id: Int?) : Call<List<UserRespon>>
+
 
     @DELETE("users/{id}")
     fun delete(@Path("id") id : Int) : Call<UserRespon>

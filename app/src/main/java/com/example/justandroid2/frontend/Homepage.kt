@@ -3,21 +3,19 @@ package com.example.justandroid2.frontend
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -34,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.justandroid2.PreferencesManager
 import com.example.justandroid2.respon.UserRespon
@@ -59,14 +59,13 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(UserService::class.java)
-    val call = retrofit.getData()
+    val call = retrofit.getData("editor")
     call.enqueue(object : Callback<List<UserRespon>> {
         override fun onResponse(
             call: Call<List<UserRespon>>,
             response: Response<List<UserRespon>>
         ) {
             if (response.code() == 200) {
-                //kosongkan list User terlebih dahulu
                 listUser.clear()
                 response.body()?.forEach{ userRespon ->
                     listUser.add(userRespon)
@@ -89,15 +88,15 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
     Scaffold (
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                    preferencesManager.saveData("jwt", "")
+                preferencesManager.clearData()
                     navController.navigate("greeting")
             }) {
-                Icon(Icons.Default.ExitToApp, contentDescription = "Add")
+                Icon(Icons.Default.ExitToApp, contentDescription = "logout")
             }
         },
         topBar = {
             TopAppBar(
-                title = { Text(text = "Home") },
+                title = { Text(text = "Pick Me Up") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -112,66 +111,55 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
             LazyColumn{
                 listUser.forEach { user ->
                     item {
-                        Row (modifier = Modifier
-                            .padding(10.dp)
-                            .fillMaxWidth()
-                            .background(Color.White), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-
-                            Text(text = user.username,
-                                 color = Color.Black)
-                            Row {
-                                IconButton(onClick = {
-                                    val retrofit = Retrofit.Builder()
-                                        .baseUrl(baseUrl)
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .build()
-                                        .create(UserService::class.java)
-                                    val call = retrofit.delete(user.id)
-                                    call.enqueue(object : Callback<UserRespon> {
-                                        override fun onResponse(
-                                            call: Call<UserRespon>,
-                                            response: Response<UserRespon>
-                                        ) {
-                                            print(response.code())
-                                            if (response.code() == 200) {
-                                                listUser.remove(user)
-                                            } else if (response.code() == 400) {
-                                                print("error login")
-                                                var toast = Toast.makeText(
-                                                    context,
-                                                    "Username atau password salah",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-
-                                            }
-                                        }
-
-                                        override fun onFailure(
-                                            call: Call<UserRespon>,
-                                            t: Throwable
-                                        ) {
-                                            print(t.message)
-                                        }
-
-                                    })
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Delete",
-                                        tint = Color.Red
+                        Row(
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .fillMaxWidth()
+                                .background(Color.White)
+                                .clickable { /* Your on click logic */ },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .padding(horizontal = 20.dp),
+                                verticalArrangement = Arrangement.spacedBy(1.dp, Alignment.Top),
+                                horizontalAlignment = Alignment.Start
+                            ) {
+                                Text(
+                                    text = user.username,
+                                    style = TextStyle(
+                                        fontSize = 16.sp,
+                                        lineHeight = 17.64.sp,
+                                        color = Color(0xFF1E1E1E),
                                     )
-                                }
-                                IconButton(onClick = {
-                                    navController.navigate("edituserpage/" + user.id + "/" + user.username)
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Edit,
-                                        contentDescription = "Edit",
-                                        tint = Color.Blue
+                                )
+                                Text(
+                                    text = "Status: Open to work",
+                                    style = TextStyle(
+                                        fontSize = 12.sp,
+                                        lineHeight = 17.64.sp,
+                                        color = Color(0x801E1E1E),
                                     )
-                                }
+                                )
+                            }
+
+                            IconButton(
+                                onClick = {
+                                    navController.navigate("detailEditor/" + user.id + "/" + user.username + "/" + user.alamat + "/" + user.status + "/" + user.job)
+                                },
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.KeyboardArrowRight,
+                                    contentDescription = "Detail Editor",
+                                    tint = Color.Black
+                                )
                             }
                         }
+
                     }
                 }
             }

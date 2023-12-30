@@ -92,14 +92,16 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
 
     // Declaring a string value to
     // store date in string format
-    var mDate by remember { mutableStateOf("Selected Date") }
+    var mDate by remember { mutableStateOf("Select Date") }
 
     // Declaring DatePickerDialog and setting
     // initial values as current values (present year, month and day)
     val mDatePickerDialog = DatePickerDialog(
         mContext,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            mDate = "$mYear-${mMonth+1}-$mDayOfMonth"
+            val formattedMonth = String.format("%02d", mMonth + 1)
+            val formattedDay = String.format("%02d", mDayOfMonth)
+            mDate = "$mYear-$formattedMonth-$formattedDay"
         }, mYear, mMonth, mDay
     )
 
@@ -141,7 +143,7 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             }, label = { Text("Email") })
             OutlinedTextField(value = alamat, onValueChange = { newText ->
                 alamat = newText
-            }, label = { Text("Alamat") }, singleLine = false)
+            }, label = { Text("Address") }, singleLine = false)
 
             val options = listOf("Editor", "Perekrut")
             var expanded by remember { mutableStateOf(false) }
@@ -188,14 +190,14 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                     readOnly = true,
                     value = selectedOptionText2,
                     onValueChange = {},
-                    label = { Text("Job") },
+                    label = { Text("Status") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded2) },
                 )
                 ExposedDropdownMenu(
                     expanded = expanded2,
                     onDismissRequest = { expanded2 = false },
                 ) {
-                    options.forEach { selectionOption2 ->
+                    options2.forEach { selectionOption2 ->
                         DropdownMenuItem(
                             text = { Text(selectionOption2) },
                             onClick = {
@@ -208,7 +210,7 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             }
 
             OutlinedTextField(value = mDate,
-                onValueChange = { mDate = it }, label = { Text("Selected Date") }, trailingIcon = {
+                onValueChange = { mDate = it }, label = { Text("Birth") }, trailingIcon = {
                     Icon(Icons.Default.DateRange,"date picker",
                         Modifier.clickable { mDatePickerDialog.show() })
                 })
@@ -233,10 +235,10 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                             navController.navigate("greeting")
 
                         } else if (response.code() == 400) {
-                            print("error login")
+                            print("error register")
                             var toast = Toast.makeText(
                                 context,
-                                "Username atau password salah",
+                                "Kolom Harus Terisi Semua",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

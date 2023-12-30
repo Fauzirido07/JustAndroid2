@@ -43,6 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.justandroid2.frontend.Homepage
 import com.example.justandroid2.data.LoginData
+import com.example.justandroid2.frontend.BuatJadwal
 import com.example.justandroid2.frontend.CreateUserPage
 import com.example.justandroid2.frontend.EditUserPage
 import com.example.justandroid2.frontend.EditorDetailScreen
@@ -66,16 +67,21 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //val preferencesManager = remember { PreferencesManager(context = LocalContext.current) }
+//                    val preferencesManager = remember { PreferencesManager(context = LocalContext.current) }
                     val sharedPreferences: SharedPreferences = LocalContext.current.getSharedPreferences("auth", Context.MODE_PRIVATE)
                     val navController = rememberNavController()
 
                     var startDestination: String
                     var jwt = sharedPreferences.getString("jwt", "")
+                    var job = sharedPreferences.getString("job", "")
                     if(jwt.equals("")){
                         startDestination = "greeting"
                     }else{
-                        startDestination = "Homepage"
+                        if(job.equals("editor")){
+                            startDestination = "homepageeditor"
+                        }else{
+                            startDestination = "Homepage"
+                        }
                     }
 
                     NavHost(navController, startDestination = startDestination) {
@@ -90,6 +96,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "homepageeditor") {
                             HomepageEditor(navController)
+                        }
+                        composable(route = "buatjadwal/{id}") { backStackEntry ->
+                            BuatJadwal(navController, backStackEntry.arguments?.getString("id"))
                         }
                         composable(
                             route = "EditProfile/{userid}/{username}/{job}/{email}/{alamat}/{birth}/{status}",
@@ -136,20 +145,6 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
     // Create mutable state variables for username and password
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        ClickableText(
-            text = AnnotatedString("Sign up here"),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(20.dp),
-            onClick = {navController.navigate("CreateUserPage")} ,
-            style = TextStyle(
-                fontSize = 14.sp,
-                textDecoration = TextDecoration.Underline,
-            )
-        )
-    }
 
     Column(
         modifier = Modifier.padding(PaddingValues(top = 130. dp)),
@@ -220,6 +215,17 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
             ) {
                 Text(text = "Login")
             }
+            ClickableText(
+                text = AnnotatedString("Sign up here"),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(60.dp),
+                onClick = {navController.navigate("CreateUserPage")} ,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    textDecoration = TextDecoration.Underline,
+                )
+            )
         }
 
         Spacer(modifier = Modifier.height(20.dp))

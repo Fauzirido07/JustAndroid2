@@ -8,11 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -39,7 +35,15 @@ import com.example.justandroid2.R
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun EditorDetailScreen(navController: NavController, id: String?, username: String?, alamat: String?, status: String?, job: String?, context: Context = LocalContext.current) {
+fun EditorDetailScreen(
+    navController: NavController,
+    id: String?,
+    username: String?,
+    alamat: String?,
+    status: String?,
+    job: String?,
+    context: Context = LocalContext.current
+) {
     val preferencesManager = remember { PreferencesManager(context = context) }
 
     var username by remember { mutableStateOf(username ?: "") }
@@ -47,31 +51,34 @@ fun EditorDetailScreen(navController: NavController, id: String?, username: Stri
     var status by remember { mutableStateOf(status ?: "") }
     var alamat by remember { mutableStateOf(alamat ?: "") }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
-                title = { Row (
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(onClick = { navController.navigate("Homepage") }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { navController.navigate("Homepage") }) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.Black
+                            )
+                        }
+                        Text(text = "Pick Me Up")
                     }
-                    Text(text = "Pick Me Up") }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
             )
-        },) {
-            innerPadding ->
-        Column (modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
         ) {
             Column(
                 modifier = Modifier
@@ -110,32 +117,37 @@ fun EditorDetailScreen(navController: NavController, id: String?, username: Stri
                 Spacer(modifier = Modifier.padding(top = 8.dp, bottom = 12.dp))
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 ) {
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .weight(1f)
-                    ) {
-                        Text(text = "Rekrut Editor")
-                    }
+                    if (status == "tetap") {
+                        Button(
+                            onClick = { navController.navigate("buatjadwal/" + id) },
+                            shape = RoundedCornerShape(50.dp),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .weight(1f)
+                        ) {
+                            Text(text = "Rekrut Editor")
+                        }
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Button(
-                        onClick = { /*TODO*/ },
-                        shape = RoundedCornerShape(50.dp),
-                        modifier = Modifier
-                            .height(50.dp)
-                            .weight(1f),
+                    } else {
+                        Button(
+                            onClick = { navController.navigate("buatjadwal/" + id) },
+                            shape = RoundedCornerShape(50.dp),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .weight(1f),
 //                        colors = ButtonDefaults.buttonColors(
 //                            containerColor = Color.Red,
 //                        ),
-                    ) {
-                        Text(text = "Sewa Editor")
+                        ) {
+                            Text(text = "Sewa Editor")
+                        }
                     }
+
+
                 }
 
 

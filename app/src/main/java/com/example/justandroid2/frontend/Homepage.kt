@@ -115,8 +115,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                             modifier = Modifier
                                 .padding(10.dp)
                                 .fillMaxWidth()
-                                .background(Color.White)
-                                .clickable { /* Your on click logic */ },
+                                .background(Color.White),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {

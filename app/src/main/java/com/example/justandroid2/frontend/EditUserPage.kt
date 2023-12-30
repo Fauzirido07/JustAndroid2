@@ -110,7 +110,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                     Row (
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconButton(onClick = { navController.navigate("homepageeditor") }) {
+                        IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 Icons.Default.ArrowBack,
                                 contentDescription = null,
@@ -139,7 +139,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
             }, label = { Text("Email") })
             OutlinedTextField(value = alamat, onValueChange = { newText ->
                 alamat = newText
-            }, label = { Text("Alamat") }, singleLine = false)
+            }, label = { Text("Address") }, singleLine = false)
 
             val options = listOf("Editor", "Perekrut")
             var expanded by remember { mutableStateOf(false) }
@@ -186,14 +186,14 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                     readOnly = true,
                     value = selectedOptionText2,
                     onValueChange = {},
-                    label = { Text("Job") },
+                    label = { Text("Status") },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded2) },
                 )
                 ExposedDropdownMenu(
                     expanded = expanded2,
                     onDismissRequest = { expanded2 = false },
                 ) {
-                    options.forEach { selectionOption2 ->
+                    options2.forEach { selectionOption2 ->
                         DropdownMenuItem(
                             text = { Text(selectionOption2) },
                             onClick = {
@@ -226,13 +226,12 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                     ) {
                         print(response.code())
                         if (response.code() == 200) {
-                            navController.navigate("Homepage")
+                            navController.navigate("homepageeditor")
 
                         } else if (response.code() == 400) {
-                            print("error login")
                             var toast = Toast.makeText(
                                 context,
-                                "Username atau password salah",
+                                "Kolom Harus Terisi Semua",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

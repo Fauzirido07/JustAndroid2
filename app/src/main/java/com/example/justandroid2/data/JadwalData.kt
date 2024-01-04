@@ -9,5 +9,6 @@ data class jadwalData(
     val editor: Int,
     val date: String,
     val time: String,
-    val link: String
+    val link: String,
+    val tawaran: String
 )

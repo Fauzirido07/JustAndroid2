@@ -1,6 +1,7 @@
 package com.example.justandroid2.service
 
 import com.example.justandroid2.data.UpdateData
+import com.example.justandroid2.data.updateStatus
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.respon.UserRespon
 import retrofit2.Call
@@ -13,11 +14,14 @@ import retrofit2.http.Query
 
 interface UserService {
     @GET("users")
-    fun getData(@Query("filters[job]") job: String?) : Call<List<UserRespon>>
+    fun getData(@Query("filters[job]") job: String?, @Query("populate") populate: String?) : Call<List<UserRespon>>
 
 
     @GET("users")
-    fun getDataEditor(@Query("filters[id]") id: Int?) : Call<List<UserRespon>>
+    fun getDataEditor(@Query("filters[id]") id: Int?, @Query("populate") populate: String?) : Call<List<UserRespon>>
+
+    @GET("users")
+    fun getDataById(@Query("filters[id]") id: Int, @Query("populate") populate: String?) : Call<List<UserRespon>>
 
 
     @DELETE("users/{id}")
@@ -25,4 +29,7 @@ interface UserService {
 
     @PUT("users/{id}")
     fun save(@Path("id") id: String?, @Body body: UpdateData): Call<LoginRespon>
+
+    @PUT("users/{id}")
+    fun saveStatus(@Path("id") id: String?, @Body body: updateStatus): Call<LoginRespon>
 }

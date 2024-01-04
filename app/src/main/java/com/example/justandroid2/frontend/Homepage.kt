@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExitToApp
@@ -59,7 +61,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(UserService::class.java)
-    val call = retrofit.getData("editor")
+    val call = retrofit.getData("Editor", "*")
     call.enqueue(object : Callback<List<UserRespon>> {
         override fun onResponse(
             call: Call<List<UserRespon>>,
@@ -144,10 +146,13 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                     )
                                 )
                             }
+                            val currentValue = user.profile?.url ?: ""
+                            val editUrl = currentValue.replace("/uploads/", "::uploads::")
+                            println(editUrl)
 
                             IconButton(
                                 onClick = {
-                                    navController.navigate("detailEditor/" + user.id + "/" + user.username + "/" + user.alamat + "/" + user.status + "/" + user.job)
+                                    navController.navigate("detailEditor/" + user.id + "/" + user.username + "/" + user.alamat + "/" + user.status + "/" + user.job + "/" + editUrl)
                                 },
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             ) {

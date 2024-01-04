@@ -154,7 +154,8 @@ fun BuatJadwal(navController: NavController, id: String?, context: Context = Loc
                             editor = id!!.toInt(),
                             date = mDate,
                             time = mTime,
-                            link = linkMeet
+                            link = linkMeet,
+                            tawaran = "pending",
                         )
                     )
                 )

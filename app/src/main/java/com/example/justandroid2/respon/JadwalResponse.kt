@@ -14,10 +14,10 @@ class JadwalResponse {
 }
 
 class JadwalAttributes {
-    var id_user: Int = 0
-    var editor: Int = 0
+    var id_user: Jadwal<User>? = null
+    var editor: Jadwal<User>? = null
     var date: String = ""
     var time: String = ""
     var link: String = ""
-    var tawaran = null
+    var tawaran: String = ""
 }

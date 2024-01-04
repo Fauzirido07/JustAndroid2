@@ -48,6 +48,7 @@ import com.example.justandroid2.frontend.CreateUserPage
 import com.example.justandroid2.frontend.EditUserPage
 import com.example.justandroid2.frontend.EditorDetailScreen
 import com.example.justandroid2.frontend.HomepageEditor
+import com.example.justandroid2.frontend.UploadCV
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.service.LoginService
 import com.example.justandroid2.ui.theme.JustAndroid2Theme
@@ -100,8 +101,11 @@ class MainActivity : ComponentActivity() {
                         composable(route = "buatjadwal/{id}") { backStackEntry ->
                             BuatJadwal(navController, backStackEntry.arguments?.getString("id"))
                         }
+                        composable(route = "uploadcv/{id}") { backStackEntry ->
+                            UploadCV(navController, backStackEntry.arguments?.getString("id"))
+                        }
                         composable(
-                            route = "EditProfile/{userid}/{username}/{job}/{email}/{alamat}/{birth}/{status}",
+                            route = "EditProfile/{userid}/{username}/{job}/{email}/{alamat}/{birth}/{status}/{profile}",
                         ) { backStackEntry ->
 
                             EditUserPage(
@@ -112,10 +116,11 @@ class MainActivity : ComponentActivity() {
                                 backStackEntry.arguments?.getString("alamat"),
                                 backStackEntry.arguments?.getString("birth"),
                                 backStackEntry.arguments?.getString("status"),
+                                backStackEntry.arguments?.getString("profile"),
                             )
 
                         }
-                        composable("detailEditor/{id}/{username}/{alamat}/{status}/{job}") { backStackEntry ->
+                        composable("detailEditor/{id}/{username}/{alamat}/{status}/{job}/{profile}") { backStackEntry ->
                             EditorDetailScreen(
                                 navController,
                                 backStackEntry.arguments?.getString("id"),
@@ -123,6 +128,7 @@ class MainActivity : ComponentActivity() {
                                 backStackEntry.arguments?.getString("alamat"),
                                 backStackEntry.arguments?.getString("status"),
                                 backStackEntry.arguments?.getString("job"),
+                                backStackEntry.arguments?.getString("profile"),
                             )
                         }
                         }
@@ -183,6 +189,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                     call.enqueue(object : Callback<LoginRespon> {
                         override fun onResponse(call: Call<LoginRespon>, response: Response<LoginRespon>) {
                             if (response.code() == 200) {
+                                val sahit = response.body()!!
                                 jwt = response.body()?.jwt!!
                                 preferencesManager.saveData("jwt", jwt)
                                 preferencesManager.saveData("iduser", response.body()?.user?.id.toString())
@@ -193,9 +200,9 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                                 preferencesManager.saveData("status", response.body()?.user?.status.toString())
                                 preferencesManager.saveData("birth", response.body()?.user?.birth.toString())
 
-                                if(response.body()?.user?.job.toString() == "editor"){
+                                if(response.body()?.user?.job.toString() == "Editor"){
                                     navController.navigate("homepageeditor")
-                                }else if (response.body()?.user?.job.toString() == "perekrut"){
+                                }else if (response.body()?.user?.job.toString() == "Perekrut"){
                                     navController.navigate("Homepage")
                                 }
                             } else if (response.code() == 400) {

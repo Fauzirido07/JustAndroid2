@@ -49,11 +49,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Homepage(navController: NavController, context: Context = LocalContext.current){
+fun Homepage(navController: NavController, context: Context = LocalContext.current) {
     //var listUser: List<UserRespon> = remember
     val preferencesManager = remember { PreferencesManager(context = context) }
 
-    val listUser = remember { mutableStateListOf<UserRespon>()}
+    val listUser = remember { mutableStateListOf<UserRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
     val retrofit = Retrofit.Builder()
@@ -61,7 +61,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(UserService::class.java)
-    val call = retrofit.getData("Editor", "*")
+    val call = retrofit.getData("Editor", "open to work", "*")
     call.enqueue(object : Callback<List<UserRespon>> {
         override fun onResponse(
             call: Call<List<UserRespon>>,
@@ -69,7 +69,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         ) {
             if (response.code() == 200) {
                 listUser.clear()
-                response.body()?.forEach{ userRespon ->
+                response.body()?.forEach { userRespon ->
                     listUser.add(userRespon)
                 }
             } else if (response.code() == 400) {
@@ -87,11 +87,11 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
         }
 
     })
-    Scaffold (
+    Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 preferencesManager.clearData()
-                    navController.navigate("greeting")
+                navController.navigate("greeting")
             }) {
                 Icon(Icons.Default.ExitToApp, contentDescription = "logout")
             }
@@ -104,13 +104,14 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
             )
-        },) {
-            innerPadding ->
-        Column (modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-            ) {
-            LazyColumn{
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
+            LazyColumn {
                 listUser.forEach { user ->
                     item {
                         Row(
@@ -138,7 +139,7 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
                                     )
                                 )
                                 Text(
-                                    text = "Status: Open to work",
+                                    text = user.statuswork,
                                     style = TextStyle(
                                         fontSize = 12.sp,
                                         lineHeight = 17.64.sp,

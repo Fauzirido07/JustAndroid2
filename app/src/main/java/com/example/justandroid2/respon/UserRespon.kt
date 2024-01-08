@@ -24,6 +24,8 @@ class UserRespon {
     var cv: UploadResponse? = null
     @SerializedName("profile")
     var profile: UploadResponse? = null
+    @SerializedName("statuswork")
+    var statuswork: String = ""
 //    var status: UserRole = UserRole.Perekrut
 }
 

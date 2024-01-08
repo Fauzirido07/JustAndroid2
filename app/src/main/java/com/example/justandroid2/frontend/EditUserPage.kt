@@ -206,11 +206,9 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
             )
             {
 
+
                 Column(modifier = Modifier
-                    .size(200.dp)
-                    .clip(
-                        RoundedCornerShape(8.dp)
-                    ),
+                    .size(200.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 )
@@ -218,7 +216,6 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                     Box(modifier = Modifier
                         .height(150.dp)
                         .width(150.dp)
-                        .border(1.dp, Color.Black, RoundedCornerShape(1000.dp))
                         .clickable { pickImageLauncher.launch("image/*") }
                         , contentAlignment = Alignment.Center) {
                         if (selectedImageUri != null) {
@@ -229,7 +226,6 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                                 contentDescription = "Selected Image",
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .clip(shape = RoundedCornerShape(8.dp))
                             )
                         } else {
                             Image(
@@ -237,7 +233,6 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                                 contentDescription = "Selected Image",
                                 modifier = Modifier
                                     .size(200.dp)
-                                    .clip(shape = RoundedCornerShape(8.dp))
                             )
                         }
                     }
@@ -403,7 +398,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                                     }
                                 }
                                 override fun onFailure(
-                                    call12: Call<UploadResponseList>, t: Throwable
+                                    call23: Call<UploadResponseList>, t: Throwable
                                 ) {
                                     Toast.makeText(
                                         context,
@@ -412,7 +407,8 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                                     ).show()
                                 }
                             })
-                        } else if (response.code() == 400) {
+                        }
+                        else if (response.code() == 400) {
                             var toast = Toast.makeText(
                                 context,
                                 "Kolom Harus Terisi Semua",

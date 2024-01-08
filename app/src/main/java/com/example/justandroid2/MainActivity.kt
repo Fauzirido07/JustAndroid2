@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                     if(jwt.equals("")){
                         startDestination = "greeting"
                     }else{
-                        if(job.equals("editor")){
+                        if(job.equals("Editor")){
                             startDestination = "homepageeditor"
                         }else{
                             startDestination = "Homepage"

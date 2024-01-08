@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 interface UserService {
     @GET("users")
-    fun getData(@Query("filters[job]") job: String?, @Query("populate") populate: String?) : Call<List<UserRespon>>
+    fun getData(@Query("filters[job]") job: String?, @Query("filters[statuswork]") statuswork: String?, @Query("populate") populate: String?) : Call<List<UserRespon>>
 
 
     @GET("users")

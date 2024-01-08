@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,11 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.justandroid2.PreferencesManager
-import com.example.justandroid2.R
-import com.example.justandroid2.respon.Jadwal
-import com.example.justandroid2.respon.JadwalResponse
 import com.example.justandroid2.respon.UserRespon
-import com.example.justandroid2.service.JadwalService
 import com.example.justandroid2.service.UserService
 import retrofit2.Call
 import retrofit2.Callback
@@ -170,14 +164,14 @@ fun EditorDetailScreen(
                     )
                 )
                 Spacer(modifier = Modifier.padding(top = 8.dp, bottom = 12.dp))
-                Image(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .height(500.dp),
-                    painter = rememberAsyncImagePainter("http://10.0.2.2:1337" + cvUrl.value),
-                    contentDescription = "image description",
-                    contentScale = ContentScale.FillBounds
-                )
+                    Image(
+                        modifier = Modifier
+                            .width(300.dp)
+                            .height(500.dp),
+                        painter = rememberAsyncImagePainter("http://10.0.2.2:1337" + cvUrl.value),
+                        contentDescription = "image description",
+                        contentScale = ContentScale.FillBounds
+                    )
 
                 Spacer(modifier = Modifier.padding(top = 8.dp, bottom = 12.dp))
                 Row(
@@ -214,7 +208,6 @@ fun EditorDetailScreen(
 
 
                 }
-
 
 
             }

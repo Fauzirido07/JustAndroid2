@@ -5,5 +5,5 @@ class UpdateData (
 )
 
 class updateStatus (
-    val statusWork: String?
+    val statuswork: String
 )

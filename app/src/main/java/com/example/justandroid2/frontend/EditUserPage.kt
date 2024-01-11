@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -263,31 +264,43 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
 
             val options = listOf("Editor", "Perekrut")
             var expanded by remember { mutableStateOf(false) }
-            var selectedOptionText by remember { mutableStateOf( job ?: options[0]) }
+            var selectedOptionText by remember { mutableStateOf(options[0]) }
+            var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
 
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded },
-            ) {
+            Column {
                 OutlinedTextField(
-                    modifier = Modifier.menuAnchor(),
-                    readOnly = true,
                     value = selectedOptionText,
-                    onValueChange = {},
+                    onValueChange = { selectedOptionText = it },
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            mTextFieldSize = coordinates.size.toSize()
+                        },
                     label = { Text("Job") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = "contentDescription",
+                            modifier = Modifier.clickable {
+                                expanded = !expanded
+                            }
+                        )
+                    },
+                    readOnly = true,
                 )
-                ExposedDropdownMenu(
+                DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current)
+                        { mTextFieldSize.width.toDp() })
                 ) {
                     options.forEach { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
                             onClick = {
                                 selectedOptionText = selectionOption
                                 expanded = false
                             },
+                            text =  { Text(selectionOption) }
                         )
                     }
                 }
@@ -295,36 +308,49 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
 
             val options2 = listOf("Tetap", "Freelance")
             var expanded2 by remember { mutableStateOf(false) }
-            var selectedOptionText2 by remember { mutableStateOf( status ?: options2[0]) }
+            var selectedOptionText2 by remember { mutableStateOf(options2[0]) }
+            var mTextFieldSize2 by remember { mutableStateOf(Size.Zero) }
 
-            ExposedDropdownMenuBox(
-                expanded = expanded2,
-                onExpandedChange = { expanded2 = !expanded2 },
-            ) {
+            Column {
                 OutlinedTextField(
-                    modifier = Modifier.menuAnchor(),
-                    readOnly = true,
                     value = selectedOptionText2,
-                    onValueChange = {},
+                    onValueChange = { selectedOptionText2 = it },
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            mTextFieldSize2 = coordinates.size.toSize()
+                        },
                     label = { Text("Status") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded2) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = "contentDescription",
+                            modifier = Modifier.clickable {
+                                expanded2 = !expanded2
+                            }
+                        )
+                    },
+                    readOnly = true,
                 )
-                ExposedDropdownMenu(
+                DropdownMenu(
                     expanded = expanded2,
                     onDismissRequest = { expanded2 = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current)
+                        { mTextFieldSize2.width.toDp() })
                 ) {
                     options2.forEach { selectionOption2 ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption2) },
                             onClick = {
                                 selectedOptionText2 = selectionOption2
                                 expanded2 = false
                             },
+                            text =  { Text(selectionOption2) }
                         )
                     }
                 }
             }
-                OutlinedTextField(value = mDate,
+
+            OutlinedTextField(value = mDate,
                 onValueChange = { mDate = it }, label = { Text("Selected Date") }, trailingIcon = {
                         Icon(Icons.Default.DateRange,"date picker",
                             Modifier.clickable { mDatePickerDialog.show() })

@@ -158,7 +158,7 @@ fun HomepageEditor(navController: NavController, context: Context = LocalContext
                     urlProfile.value = dataList.get(0).profile?.url!!
                     println(urlProfile.value)
                     } else {
-                        urlProfile.value = "/uploads/camera_f2a68f490d.png"
+                        urlProfile.value = "/uploads/camera_690aedcd4f.png"
                     }
 
                 }
@@ -428,7 +428,7 @@ fun HomepageEditor(navController: NavController, context: Context = LocalContext
                                     } else if(jadwalResp.attributes.tawaran == "tolak") {
                                         Button(
                                             onClick = {
-
+                                                context.startActivity(intent)
                                             },
                                             shape = RoundedCornerShape(50.dp),
                                             modifier = Modifier

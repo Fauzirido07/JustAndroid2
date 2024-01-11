@@ -13,16 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,15 +34,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.navigation.NavController
-import com.example.justandroid2.PreferencesManager
 import com.example.justandroid2.data.RegisterData
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.service.RegisterService
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,13 +58,11 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateUserPage(navController: NavController, context: Context = LocalContext.current){
-    val preferencesManager = remember { PreferencesManager(context = context) }
     val primaryColor = Color(0xFF596FB7)
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var alamat by remember { mutableStateOf(TextFieldValue("")) }
-
     val mContext = LocalContext.current
 
     // Declaring integer values
@@ -122,9 +123,13 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            OutlinedTextField(modifier = Modifier.padding(PaddingValues(top = 50. dp)), value = username, onValueChange = { newText ->
-                username = newText
-            }, label = { Text("Username") })
+            OutlinedTextField(
+                modifier = Modifier.padding(PaddingValues(top = 50.dp)),
+                value = username,
+                onValueChange = { newText ->
+                    username = newText
+                },
+                label = { Text("Username") })
             OutlinedTextField(value = password, onValueChange = { newText ->
                 password = newText
             }, label = { Text("Password") })
@@ -138,62 +143,86 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
             val options = listOf("Editor", "Perekrut")
             var expanded by remember { mutableStateOf(false) }
             var selectedOptionText by remember { mutableStateOf(options[0]) }
+            var mTextFieldSize by remember { mutableStateOf(Size.Zero) }
 
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded },
-            ) {
+            Column {
                 OutlinedTextField(
-                    modifier = Modifier.menuAnchor(),
-                    readOnly = true,
                     value = selectedOptionText,
-                    onValueChange = {},
+                    onValueChange = { selectedOptionText },
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            mTextFieldSize = coordinates.size.toSize()
+                        },
                     label = { Text("Job") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = "contentDescription",
+                            modifier = Modifier.clickable {
+                                expanded = !expanded
+                            }
+                        )
+                    },
+                    readOnly = true,
                 )
-                ExposedDropdownMenu(
+                DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current)
+                        { mTextFieldSize.width.toDp() })
                 ) {
                     options.forEach { selectionOption ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption) },
                             onClick = {
                                 selectedOptionText = selectionOption
                                 expanded = false
                             },
+                            text =  { Text(selectionOption) }
                         )
                     }
                 }
             }
 
-            val options2 = listOf("Tetap", "Freelance")
+            val options2 = listOf("Tetap", "Freelancer")
             var expanded2 by remember { mutableStateOf(false) }
             var selectedOptionText2 by remember { mutableStateOf(options2[0]) }
+            var mTextFieldSize2 by remember { mutableStateOf(Size.Zero) }
 
-            ExposedDropdownMenuBox(
-                expanded = expanded2,
-                onExpandedChange = { expanded2 = !expanded2 },
-            ) {
+            Column {
                 OutlinedTextField(
-                    modifier = Modifier.menuAnchor(),
-                    readOnly = true,
                     value = selectedOptionText2,
-                    onValueChange = {},
+                    onValueChange = { selectedOptionText2 },
+                    modifier = Modifier
+                        .onGloballyPositioned { coordinates ->
+                            mTextFieldSize2 = coordinates.size.toSize()
+                        },
                     label = { Text("Status") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded2) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = "contentDescription",
+                            modifier = Modifier.clickable {
+                                expanded2 = !expanded2
+                            }
+                        )
+                    },
+                    readOnly = true,
                 )
-                ExposedDropdownMenu(
+                DropdownMenu(
                     expanded = expanded2,
                     onDismissRequest = { expanded2 = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current)
+                        { mTextFieldSize2.width.toDp() })
                 ) {
                     options2.forEach { selectionOption2 ->
                         DropdownMenuItem(
-                            text = { Text(selectionOption2) },
                             onClick = {
                                 selectedOptionText2 = selectionOption2
                                 expanded2 = false
                             },
+                            text =  { Text(selectionOption2) }
                         )
                     }
                 }
@@ -208,36 +237,46 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                 .width(280.dp)
                 .padding(PaddingValues(top = 30.dp)), colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue), onClick = {
-                var baseUrl = "http://10.0.2.2:1337/api/"
+                val baseUrl = "http://10.0.2.2:1337/api/"
                 val retrofit = Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(RegisterService::class.java)
-                var statuswork = ""
-                if(selectedOptionText.equals("Editor")) {
-                    statuswork = "prepare"
+                val statuswork: String = if(selectedOptionText == "Editor") {
+                    "prepare"
                 } else {
-                    statuswork = ""
+                    "null"
                 }
-                println("statuswork: $statuswork")
                 val call = retrofit.saveData(RegisterData(email.text, username.text, password.text, alamat.text, selectedOptionText, selectedOptionText2, mDate, statuswork))
                 call.enqueue(object : Callback<LoginRespon> {
                     override fun onResponse(
                         call: Call<LoginRespon>,
                         response: Response<LoginRespon>
                     ) {
-                        print(response.code())
-                        if (response.code() == 200) {
-                            val resp = response.body()
+                        if (response.isSuccessful) {
                             navController.navigate("greeting")
-                        } else if (response.code() == 400) {
+                        } else {
                             print("error register")
-                            var toast = Toast.makeText(
+                            Toast.makeText(
                                 context,
                                 "Kolom Harus Terisi Semua",
                                 Toast.LENGTH_SHORT
                             ).show()
+//                            try{
+//                                val JObjError = JSONObject(response.errorBody()!!.string())
+//                                Toast.makeText(
+//                                    context,
+//                                    JObjError.getJSONObject("error").get("message").toString(),
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }catch (e: Exception){
+//                                Toast.makeText(
+//                                    context,
+//                                    e.message.toString(),
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
                         }
                     }
 

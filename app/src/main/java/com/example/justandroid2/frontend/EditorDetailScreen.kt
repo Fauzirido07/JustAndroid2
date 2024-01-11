@@ -169,7 +169,7 @@ fun EditorDetailScreen(
                     Image(
                         modifier = Modifier
                             .width(300.dp)
-                            .height(500.dp),
+                            .height(300.dp),
                         painter = rememberAsyncImagePainter("http://10.0.2.2:1337" + cvUrl.value),
                         contentDescription = "image description",
                         contentScale = ContentScale.FillBounds

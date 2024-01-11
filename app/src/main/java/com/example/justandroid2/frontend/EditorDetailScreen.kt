@@ -188,7 +188,7 @@ fun EditorDetailScreen(
                             shape = RoundedCornerShape(50.dp),
                             modifier = Modifier
                                 .height(50.dp)
-                                .weight(1f)
+                                .fillMaxWidth(),
                         ) {
                             Text(text = "Rekrut Editor")
                         }
@@ -199,7 +199,7 @@ fun EditorDetailScreen(
                             shape = RoundedCornerShape(50.dp),
                             modifier = Modifier
                                 .height(50.dp)
-                                .weight(1f),
+                                .fillMaxWidth(),
                         ) {
                             Text(text = "Sewa Editor")
                         }

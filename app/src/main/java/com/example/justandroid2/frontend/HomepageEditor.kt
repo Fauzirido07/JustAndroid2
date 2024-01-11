@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -585,6 +586,7 @@ fun UploadCV(navController: NavController, id:String?, context: Context = LocalC
     val idCV = remember {
         mutableStateOf( id ?: "")
     }
+    val primaryColor = Color(0xFF596FB7)
     var selectedImageFile by remember { mutableStateOf<File?>(null) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     val resolver = context.contentResolver
@@ -619,6 +621,9 @@ Scaffold(
     topBar = {
         TopAppBar(
             title = { Text(text = "Upload CV") },
+            colors = TopAppBarDefaults.smallTopAppBarColors(
+                containerColor = primaryColor,
+                titleContentColor = Color.White,),
             navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(

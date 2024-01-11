@@ -101,6 +101,7 @@ import java.util.Date
 @Composable
 fun EditUserPage(navController: NavController, userid : String?, username : String?, job : String?, email : String?, alamat : String?, birth : String?, status : String?, editUrl : String?, context: Context = LocalContext.current){
     val preferencesManager = remember { PreferencesManager(context = context) }
+    val primaryColor = Color(0xFF596FB7)
     var username by remember { mutableStateOf(TextFieldValue(username ?: "")) }
     var email by remember { mutableStateOf(TextFieldValue(email ?: "")) }
     var alamat by remember { mutableStateOf(TextFieldValue(alamat ?: "")) }
@@ -187,8 +188,8 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                     Text(text = "Edit Profile") }
                         },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = primaryColor,
+                    titleContentColor = Color.White,
                 ),
             )
         },) {

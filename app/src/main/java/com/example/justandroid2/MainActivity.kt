@@ -49,6 +49,7 @@ import com.example.justandroid2.frontend.EditUserPage
 import com.example.justandroid2.frontend.EditorDetailScreen
 import com.example.justandroid2.frontend.HomepageEditor
 import com.example.justandroid2.frontend.UploadCV
+import com.example.justandroid2.frontend.WelcomeScreen
 import com.example.justandroid2.respon.LoginRespon
 import com.example.justandroid2.service.LoginService
 import com.example.justandroid2.ui.theme.JustAndroid2Theme
@@ -88,6 +89,9 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController, startDestination = startDestination) {
                         composable(route = "greeting") {
                             Login(navController)
+                        }
+                        composable(route = "welcomescreen") {
+                            WelcomeScreen(navController)
                         }
                         composable(route = "Homepage") {
                             Homepage(navController)
@@ -157,6 +161,9 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(text = "Pick Me Up", style = TextStyle(fontSize = 40.sp))
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(text = "Login", style = TextStyle(fontSize = 40.sp))
 
@@ -200,11 +207,7 @@ fun Login(navController: NavController, context: Context = LocalContext.current)
                                 preferencesManager.saveData("status", response.body()?.user?.status.toString())
                                 preferencesManager.saveData("birth", response.body()?.user?.birth.toString())
 
-                                if(response.body()?.user?.job.toString() == "Editor"){
-                                    navController.navigate("homepageeditor")
-                                }else if (response.body()?.user?.job.toString() == "Perekrut"){
-                                    navController.navigate("Homepage")
-                                }
+                                navController.navigate("welcomescreen")
                             } else if (response.code() == 400) {
                                 Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
                             }

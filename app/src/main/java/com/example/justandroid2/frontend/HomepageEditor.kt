@@ -98,6 +98,8 @@ import java.util.Locale
 fun HomepageEditor(navController: NavController, context: Context = LocalContext.current) {
     val preferencesManager = remember { PreferencesManager(context = context) }
 
+    val primaryColor = Color(0xFF596FB7)
+
     val listJadwal = remember { mutableStateListOf<JadwalResponse>() }
     val baseUrl = "http://10.0.2.2:1337/api/"
     val retrofit = Retrofit.Builder()
@@ -150,8 +152,14 @@ fun HomepageEditor(navController: NavController, context: Context = LocalContext
                 val resp = response12.body()
                 resp?.let { dataList ->
                     sw.value = dataList.get(0).statuswork
+
+                    if(dataList.get(0).profile != null) {
                     urlProfile.value = dataList.get(0).profile?.url!!
                     println(urlProfile.value)
+                    } else {
+                        urlProfile.value = "/uploads/camera_f2a68f490d.png"
+                    }
+
                 }
             } else if (response12.code() == 400) {
                 Toast.makeText(
@@ -181,8 +189,8 @@ fun HomepageEditor(navController: NavController, context: Context = LocalContext
             TopAppBar(
                 title = { Text(text = "Pick Me Up - Editor") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = primaryColor,
+                    titleContentColor = Color.White,
                 ),
             )
         },
@@ -228,7 +236,6 @@ fun HomepageEditor(navController: NavController, context: Context = LocalContext
                                     modifier = Modifier
                                         .size(200.dp)
                                 )
-
                         }
 
                     }
@@ -641,7 +648,6 @@ Scaffold(
                 Box(modifier = Modifier
                     .height(430.dp)
                     .width(430.dp)
-                    .border(1.dp, Color.Black, RoundedCornerShape(1000.dp))
                     .clickable { pickImageLauncher.launch("image/*") }
                     , contentAlignment = Alignment.Center) {
                     if (selectedImageUri != null) {
@@ -652,16 +658,13 @@ Scaffold(
                             contentDescription = "Selected Image",
                             modifier = Modifier
                                 .fillMaxSize()
-                                .clip(shape = RoundedCornerShape(8.dp))
                         )
                     } else {
                         Image(
                             painter = painterResource(id = R.drawable.camera),
                             contentDescription = "Selected Image",
                             modifier = Modifier
-                                .size(48.dp)
-                                .clip(shape = RoundedCornerShape(8.dp))
-                        )
+                                .size(48.dp))
                     }
                 }
 

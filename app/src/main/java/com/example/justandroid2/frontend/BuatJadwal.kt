@@ -54,6 +54,8 @@ import java.util.Date
 fun BuatJadwal(navController: NavController, id: String?, context: Context = LocalContext.current){
     val preferencesManager = remember { PreferencesManager(context = context) }
 
+    val primaryColor = Color(0xFF596FB7)
+
     var linkMeet by remember { mutableStateOf("") }
     // Declaring integer values
     // for year, month and day
@@ -115,8 +117,8 @@ fun BuatJadwal(navController: NavController, id: String?, context: Context = Loc
                     Text(text = "Buat Jadwal") }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = primaryColor,
+                    titleContentColor = Color.White,
                 ),
             )
         },) {

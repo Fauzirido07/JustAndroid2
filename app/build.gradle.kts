@@ -72,4 +72,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("io.coil-kt:coil-compose:2.0.0-rc01")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 }

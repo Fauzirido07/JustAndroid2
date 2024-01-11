@@ -57,6 +57,8 @@ fun EditorDetailScreen(
 ) {
     val preferencesManager = remember { PreferencesManager(context = context) }
 
+    val primaryColor = Color(0xFF596FB7)
+
     var username by remember { mutableStateOf(username ?: "") }
     var job by remember { mutableStateOf(job ?: "") }
     var status by remember { mutableStateOf(status ?: "") }
@@ -118,8 +120,8 @@ fun EditorDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = primaryColor,
+                    titleContentColor = Color.White,
                 ),
             )
         },
@@ -180,7 +182,7 @@ fun EditorDetailScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
-                    if (status == "tetap") {
+                    if (status == "Tetap") {
                         Button(
                             onClick = { navController.navigate("buatjadwal/" + id) },
                             shape = RoundedCornerShape(50.dp),
@@ -198,9 +200,6 @@ fun EditorDetailScreen(
                             modifier = Modifier
                                 .height(50.dp)
                                 .weight(1f),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = Color.Red,
-//                        ),
                         ) {
                             Text(text = "Sewa Editor")
                         }

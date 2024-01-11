@@ -53,6 +53,8 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
     //var listUser: List<UserRespon> = remember
     val preferencesManager = remember { PreferencesManager(context = context) }
 
+    val primaryColor = Color(0xFF596FB7)
+
     val listUser = remember { mutableStateListOf<UserRespon>() }
     //var listUser: List<UserRespon> by remember { mutableStateOf(List<UserRespon>()) }
     var baseUrl = "http://10.0.2.2:1337/api/"
@@ -100,8 +102,8 @@ fun Homepage(navController: NavController, context: Context = LocalContext.curre
             TopAppBar(
                 title = { Text(text = "Pick Me Up") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = primaryColor,
+                    titleContentColor = Color.White,
                 ),
             )
         },

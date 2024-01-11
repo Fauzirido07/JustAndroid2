@@ -56,6 +56,7 @@ import java.util.Date
 @Composable
 fun CreateUserPage(navController: NavController, context: Context = LocalContext.current){
     val preferencesManager = remember { PreferencesManager(context = context) }
+    val primaryColor = Color(0xFF596FB7)
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
@@ -110,8 +111,8 @@ fun CreateUserPage(navController: NavController, context: Context = LocalContext
                         Text(text = "Register") }
                             },
                     colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
+                        containerColor = primaryColor,
+                        titleContentColor = Color.White,
                     ),
                 )
                  },) {

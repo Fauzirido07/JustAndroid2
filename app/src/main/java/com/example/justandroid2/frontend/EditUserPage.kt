@@ -86,6 +86,7 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -270,7 +271,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
             Column {
                 OutlinedTextField(
                     value = selectedOptionText,
-                    onValueChange = { selectedOptionText = it },
+                    onValueChange = { selectedOptionText },
                     modifier = Modifier
                         .onGloballyPositioned { coordinates ->
                             mTextFieldSize = coordinates.size.toSize()
@@ -306,7 +307,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                 }
             }
 
-            val options2 = listOf("Tetap", "Freelance")
+            val options2 = listOf("Tetap", "Freelancer")
             var expanded2 by remember { mutableStateOf(false) }
             var selectedOptionText2 by remember { mutableStateOf(options2[0]) }
             var mTextFieldSize2 by remember { mutableStateOf(Size.Zero) }
@@ -314,7 +315,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
             Column {
                 OutlinedTextField(
                     value = selectedOptionText2,
-                    onValueChange = { selectedOptionText2 = it },
+                    onValueChange = { selectedOptionText2 },
                     modifier = Modifier
                         .onGloballyPositioned { coordinates ->
                             mTextFieldSize2 = coordinates.size.toSize()
@@ -350,6 +351,7 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                 }
             }
 
+
             OutlinedTextField(value = mDate,
                 onValueChange = { mDate = it }, label = { Text("Selected Date") }, trailingIcon = {
                         Icon(Icons.Default.DateRange,"date picker",
@@ -370,70 +372,94 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                         call: Call<LoginRespon>,
                         response: Response<LoginRespon>
                     ) {
+//                        if(response.isSuccessful){
+//                            println("halo")
+//                        } else {
+//                            try{
+//                                val JObjError = JSONObject(response.errorBody()!!.string())
+//                                Toast.makeText(
+//                                    context,
+//                                    JObjError.getJSONObject("error").get("message").toString(),
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }catch (e: Exception){
+//                                Toast.makeText(
+//                                    context,
+//                                    e.message.toString(),
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
+//                        }
                         if (response.code() == 200) {
                             preferencesManager.saveData("username", username.text)
-                            preferencesManager.saveData("job", selectedOptionText)
                             preferencesManager.saveData("email", email.text)
                             preferencesManager.saveData("alamat", alamat.text)
+                            preferencesManager.saveData("job", selectedOptionText)
                             preferencesManager.saveData("status", selectedOptionText2)
                             preferencesManager.saveData("birth", mDate)
-                            val file = selectedImageFile
-                            val mimeType =
-                                MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                                    file!!.extension
+                            if(selectedImageFile != null) {
+                                val file = selectedImageFile
+                                val mimeType =
+                                    MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                                        file!!.extension
+                                    )
+                                val refRequestBody =
+                                    "plugin::users-permissions.user".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                                val refIdRequestBody = iduser
+                                    .toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                                val fieldRequestBody =
+                                    "profile".toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                                val fileRequestBody = MultipartBody.Part.createFormData(
+                                    "files",
+                                    file.name,
+                                    file.asRequestBody(mimeType?.toMediaTypeOrNull())
                                 )
-                            val refRequestBody =
-                                "plugin::users-permissions.user".toRequestBody("multipart/form-data".toMediaTypeOrNull())
-                            val refIdRequestBody = iduser
-                                .toRequestBody("multipart/form-data".toMediaTypeOrNull())
-                            val fieldRequestBody =
-                                "profile".toRequestBody("multipart/form-data".toMediaTypeOrNull())
-                            val fileRequestBody = MultipartBody.Part.createFormData(
-                                "files",
-                                file.name,
-                                file.asRequestBody(mimeType?.toMediaTypeOrNull())
-                            )
 
-                            val retrofit23 = Retrofit.Builder().baseUrl("http://10.0.2.2:1337/api/")
-                                .addConverterFactory(GsonConverterFactory.create()).client(
-                                    OkHttpClient.Builder().addInterceptor(
-                                        HttpLoggingInterceptor().setLevel(
-                                            HttpLoggingInterceptor.Level.BODY
-                                        )
-                                    ).build()
+                                val retrofit23 = Retrofit.Builder().baseUrl("http://10.0.2.2:1337/api/")
+                                    .addConverterFactory(GsonConverterFactory.create()).client(
+                                        OkHttpClient.Builder().addInterceptor(
+                                            HttpLoggingInterceptor().setLevel(
+                                                HttpLoggingInterceptor.Level.BODY
+                                            )
+                                        ).build()
+                                    )
+                                    .build().create(CVService::class.java)
+                                val call23 = retrofit23.uploadImage(
+                                    refRequestBody,
+                                    refIdRequestBody,
+                                    fieldRequestBody,
+                                    fileRequestBody
                                 )
-                                .build().create(CVService::class.java)
-                            val call23 = retrofit23.uploadImage(
-                                refRequestBody,
-                                refIdRequestBody,
-                                fieldRequestBody,
-                                fileRequestBody
-                            )
-                            call23.enqueue(object : Callback<UploadResponseList> {
-                                override fun onResponse(
-                                    call23: Call<UploadResponseList>,
-                                    response23: Response<UploadResponseList>
-                                ) {
-                                    if (response23.isSuccessful) {
-                                        navController.navigate("homepageeditor")
-                                    } else {
+                                call23.enqueue(object : Callback<UploadResponseList> {
+                                    override fun onResponse(
+                                        call23: Call<UploadResponseList>,
+                                        response23: Response<UploadResponseList>
+                                    ) {
+                                        if (response23.isSuccessful) {
+                                            navController.navigate("homepageeditor")
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                "Error: ${response23.code()} - ${response23.message()}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+
+                                        }
+                                    }
+                                    override fun onFailure(
+                                        call23: Call<UploadResponseList>, t: Throwable
+                                    ) {
                                         Toast.makeText(
                                             context,
-                                            "Error: ${response23.code()} - ${response23.message()}",
+                                            "Error: " + t.message,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
-                                }
-                                override fun onFailure(
-                                    call23: Call<UploadResponseList>, t: Throwable
-                                ) {
-                                    Toast.makeText(
-                                        context,
-                                        "Error: " + t.message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            })
+                                })
+                            }
+                            else {
+                                navController.navigate("homepageeditor")
+                            }
                         }
                         else if (response.code() == 400) {
                             var toast = Toast.makeText(
@@ -441,6 +467,20 @@ fun EditUserPage(navController: NavController, userid : String?, username : Stri
                                 "Kolom Harus Terisi Semua",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            try{
+                                val JObjError = JSONObject(response.errorBody()!!.string())
+                                Toast.makeText(
+                                    context,
+                                    JObjError.getJSONObject("error").get("message").toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }catch (e: Exception){
+                                Toast.makeText(
+                                    context,
+                                    e.message.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
 
